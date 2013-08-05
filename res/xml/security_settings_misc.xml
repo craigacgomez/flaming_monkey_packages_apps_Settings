@@ -65,6 +65,16 @@
                 android:persistent="false"
                 android:fragment="com.android.settings.NotificationAccessSettings"/>
 
+        <PreferenceScreen
+                android:fragment="com.android.settings.applications.AppOpsSummary"
+                android:summary="@string/app_ops_summary"
+                android:title="@string/app_ops_title">
+            <intent
+                    android:action="com.android.settings.Settings$AppOpsSummaryActivity"
+                    android:targetPackage="com.android.settings"
+                    android:targetClass="com.android.settings.Settings$AppOpsSummaryActivity" />
+        </PreferenceScreen>
+
     </PreferenceCategory>
 
     <PreferenceCategory android:key="credentials_management"
@@ -96,5 +106,6 @@
                     android:targetPackage="com.android.settings"
                     android:targetClass="com.android.settings.CredentialStorage"/>
         </Preference>
+
     </PreferenceCategory>
 </PreferenceScreen>

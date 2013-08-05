@@ -4534,4 +4534,8 @@
 
     <!-- Text to display in regulatory info screen (from device overlay). -->
     <string name="regulatory_info_text"></string>
+
+    <!-- App Ops -->
+    <string name="app_ops_title">App Ops</string>
+    <string name="app_ops_summary">Fine-grained permission controls (may cause issues)</string>
 </resources>
