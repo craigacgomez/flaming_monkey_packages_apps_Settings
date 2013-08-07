@@ -52,6 +52,14 @@
                 android:entryValues="@array/entryvalues_font_size"
                 android:dialogTitle="@string/dialog_title_font_size" />
 
+        <ListPreference
+                android:key="nav_bar_position"
+                android:title="@string/nav_bar_position"
+                android:entries="@array/nav_bar_position_entries"
+                android:entryValues="@array/nav_bar_position_values"
+                android:defaultValue="0"
+                android:persistent="false" />
+
         <CheckBoxPreference
             android:key="notification_pulse"
             android:title="@string/notification_pulse_title"

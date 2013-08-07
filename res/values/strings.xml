@@ -4538,4 +4538,10 @@
     <!-- App Ops -->
     <string name="app_ops_title">App Ops</string>
     <string name="app_ops_summary">Fine-grained permission controls (may cause issues)</string>
+
+    <!-- Navigation bar position -->
+    <string name="nav_bar_position">Navigation Bar Position</string>
+    <string name="navigation_bar_default">Default (Center)</string>
+    <string name="navigation_bar_left">Left</string>
+    <string name="navigation_bar_right">Right</string>
 </resources>

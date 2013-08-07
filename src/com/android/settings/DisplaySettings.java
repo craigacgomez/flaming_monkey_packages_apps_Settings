@@ -33,6 +33,7 @@ import android.hardware.display.WifiDisplay;
 import android.hardware.display.WifiDisplayStatus;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -42,6 +43,7 @@ import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.WindowManagerGlobal;
 
 import com.android.internal.view.RotationPolicy;
 import com.android.settings.DreamSettings;
@@ -61,6 +63,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private static final String KEY_NOTIFICATION_PULSE = "notification_pulse";
     private static final String KEY_SCREEN_SAVER = "screensaver";
     private static final String KEY_WIFI_DISPLAY = "wifi_display";
+    private static final String KEY_NAV_BAR_POSITION = "nav_bar_position";
 
     private static final int DLG_GLOBAL_CHANGE_WARNING = 1;
 
@@ -71,12 +74,16 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private CheckBoxPreference mNotificationPulse;
 
     private final Configuration mCurConfig = new Configuration();
-    
+
     private ListPreference mScreenTimeoutPreference;
     private Preference mScreenSaverPreference;
 
     private WifiDisplayStatus mWifiDisplayStatus;
     private Preference mWifiDisplayPreference;
+
+    private ListPreference mNavigationBarPositionPref;
+
+    private boolean mIsPrimary;
 
     private final RotationPolicy.RotationPolicyListener mRotationPolicyListener =
             new RotationPolicy.RotationPolicyListener() {
@@ -90,6 +97,8 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ContentResolver resolver = getActivity().getContentResolver();
+
+        mIsPrimary = UserHandle.myUserId() == UserHandle.USER_OWNER;
 
         addPreferencesFromResource(R.xml.display_settings);
 
@@ -107,7 +116,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
                         com.android.internal.R.bool.config_dreamsSupported) == false) {
             getPreferenceScreen().removePreference(mScreenSaverPreference);
         }
-        
+
         mScreenTimeoutPreference = (ListPreference) findPreference(KEY_SCREEN_TIMEOUT);
         final long currentTimeout = Settings.System.getLong(resolver, SCREEN_OFF_TIMEOUT,
                 FALLBACK_SCREEN_TIMEOUT_VALUE);
@@ -142,6 +151,25 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
                 == WifiDisplayStatus.FEATURE_STATE_UNAVAILABLE) {
             getPreferenceScreen().removePreference(mWifiDisplayPreference);
             mWifiDisplayPreference = null;
+        }
+
+        if (mIsPrimary) {
+            int mNavigationBarPositionValue = Settings.Global.getInt(resolver,
+                                                Settings.Global.NAV_BAR_POSITION, 0);
+            try {
+                if (WindowManagerGlobal.getWindowManagerService().hasNavigationBar()) {
+                    mNavigationBarPositionPref = (ListPreference) findPreference(KEY_NAV_BAR_POSITION);
+                    mNavigationBarPositionPref.setOnPreferenceChangeListener(this);
+                    mNavigationBarPositionPref.setValue(String.valueOf(mNavigationBarPositionValue));
+                    updateNavigationBarPositionSummary(mNavigationBarPositionValue);
+                } else {
+                    getPreferenceScreen().removePreference(findPreference(KEY_NAV_BAR_POSITION));
+                }
+            } catch (RemoteException e) {
+                Log.e(TAG, "Error getting navigation bar status");
+            }
+        } else {
+            getPreferenceScreen().removePreference(findPreference(KEY_NAV_BAR_POSITION));
         }
     }
 
@@ -219,7 +247,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         }
         return indices.length-1;
     }
-    
+
     public void readFontSizePreference(ListPreference pref) {
         try {
             mCurConfig.updateFrom(ActivityManagerNative.getDefault().getConfiguration());
@@ -237,7 +265,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         pref.setSummary(String.format(res.getString(R.string.summary_font_size),
                 fontSizeNames[index]));
     }
-    
+
     @Override
     public void onResume() {
         super.onResume();
@@ -354,6 +382,18 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         if (KEY_FONT_SIZE.equals(key)) {
             writeFontSizePreference(objValue);
         }
+        if (KEY_NAV_BAR_POSITION.equals(key)) {
+            int value = Integer.valueOf((String) objValue);
+            Settings.Global.putInt(getContentResolver(), Settings.Global.NAV_BAR_POSITION, value);
+            updateNavigationBarPositionSummary(value);
+            try {
+                Process proc = Runtime.getRuntime().exec(new String[]{"su","-c","killall com.android.systemui"});
+                proc.waitFor();
+            } catch (Exception e) {
+                Log.e(TAG, "Error restarting SystemUI");
+            }
+            return true;
+        }
 
         return true;
     }
@@ -380,5 +420,16 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             }
         }
         return false;
+    }
+
+    private void updateNavigationBarPositionSummary(int value) {
+        Resources res = getResources();
+        if (value == 0) {
+            mNavigationBarPositionPref.setSummary(res.getString(R.string.navigation_bar_default));
+        } else if (value == 1) {
+            mNavigationBarPositionPref.setSummary(res.getString(R.string.navigation_bar_left));
+        } else if (value == 2) {
+            mNavigationBarPositionPref.setSummary(res.getString(R.string.navigation_bar_right));
+        }
     }
 }
