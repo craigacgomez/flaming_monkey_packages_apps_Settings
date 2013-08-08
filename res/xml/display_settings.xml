@@ -44,6 +44,17 @@
                 android:title="@string/screensaver_settings_title"
                 android:fragment="com.android.settings.DreamSettings" />
 
+        <PreferenceScreen
+            android:key="lock_clock"
+            android:summary="@string/lock_clock_summary"
+            android:title="@string/lock_clock_title" >
+
+            <intent
+                android:action="android.intent.action.MAIN"
+                android:targetClass="com.cyanogenmod.lockclock.preference.Preferences"
+                android:targetPackage="com.cyanogenmod.lockclock" />
+        </PreferenceScreen>
+
         <com.android.settings.WarnedListPreference
                 android:key="font_size"
                 android:title="@string/title_font_size"
