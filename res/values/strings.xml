@@ -4582,4 +4582,8 @@
 
     <!-- Hostname setting -->
     <string name="device_hostname">Device hostname</string>
+
+    <!-- Device info -->
+    <string name="cpu_info">CPU</string>
+    <string name="mem_info">Memory</string>
 </resources>
