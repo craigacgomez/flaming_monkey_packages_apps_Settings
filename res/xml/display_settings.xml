@@ -28,8 +28,8 @@
                 android:fragment="com.android.settings.WallpaperTypeSettings" />
 
         <CheckBoxPreference
-            android:key="accelerometer"
-            android:title="@string/accelerometer_title"/>
+                android:key="accelerometer"
+                android:title="@string/accelerometer_title"/>
 
         <ListPreference
                 android:key="screen_timeout"
@@ -45,14 +45,14 @@
                 android:fragment="com.android.settings.DreamSettings" />
 
         <PreferenceScreen
-            android:key="lock_clock"
-            android:summary="@string/lock_clock_summary"
-            android:title="@string/lock_clock_title" >
+                android:key="lock_clock"
+                android:summary="@string/lock_clock_summary"
+                android:title="@string/lock_clock_title" >
 
             <intent
-                android:action="android.intent.action.MAIN"
-                android:targetClass="com.cyanogenmod.lockclock.preference.Preferences"
-                android:targetPackage="com.cyanogenmod.lockclock" />
+                    android:action="android.intent.action.MAIN"
+                    android:targetClass="com.cyanogenmod.lockclock.preference.Preferences"
+                    android:targetPackage="com.cyanogenmod.lockclock" />
         </PreferenceScreen>
 
         <com.android.settings.WarnedListPreference
@@ -72,13 +72,19 @@
                 android:persistent="false" />
 
         <CheckBoxPreference
-            android:key="notification_pulse"
-            android:title="@string/notification_pulse_title"
-            android:persistent="false" />
+                android:key="notification_pulse"
+                android:title="@string/notification_pulse_title"
+                android:persistent="false" />
 
         <PreferenceScreen
                 android:key="wifi_display"
                 android:title="@string/wifi_display_settings_title"
                 android:fragment="com.android.settings.wfd.WifiDisplaySettings" />
+
+        <CheckBoxPreference
+                android:key="volume_wake"
+                android:title="@string/volume_wake_title"
+                android:summary="@string/volume_wake_summary"
+                android:defaultValue="false" />
 
 </PreferenceScreen>

@@ -79,6 +79,7 @@ public class SoundSettings extends SettingsPreferenceFragment implements
     private static final String KEY_DOCK_SOUNDS = "dock_sounds";
     private static final String KEY_DOCK_AUDIO_MEDIA_ENABLED = "dock_audio_media_enabled";
     private static final String KEY_QUIET_HOURS = "quiet_hours";
+    private static final String KEY_VOLBTN_MUSIC_CONTROLS = "volbtn_music_controls";
 
     private static final String[] NEED_VOICE_CAPABILITY = {
             KEY_RINGTONE, KEY_DTMF_TONE, KEY_CATEGORY_CALLS,
@@ -97,6 +98,7 @@ public class SoundSettings extends SettingsPreferenceFragment implements
     private Preference mRingtonePreference;
     private Preference mNotificationPreference;
     private PreferenceScreen mQuietHours;
+    private CheckBoxPreference mVolBtnMusicControls;
 
     private Runnable mRingtoneLookupRunnable;
 
@@ -190,6 +192,12 @@ public class SoundSettings extends SettingsPreferenceFragment implements
                     returnTime(Settings.System.getString(resolver, Settings.System.QUIET_HOURS_END)));
         } else {
             mQuietHours.setSummary(getString(R.string.quiet_hours_summary));
+        }
+
+        mVolBtnMusicControls = (CheckBoxPreference) findPreference(KEY_VOLBTN_MUSIC_CONTROLS);
+        if (mVolBtnMusicControls != null) {
+            mVolBtnMusicControls.setChecked(Settings.System.getInt(resolver,
+                    Settings.System.VOLBTN_MUSIC_CONTROLS, 0) == 1);
         }
 
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -372,6 +380,9 @@ public class SoundSettings extends SettingsPreferenceFragment implements
         } else if (preference == mDockAudioMediaEnabled) {
             Settings.Global.putInt(getContentResolver(), Settings.Global.DOCK_AUDIO_MEDIA_ENABLED,
                     mDockAudioMediaEnabled.isChecked() ? 1 : 0);
+        } else if (preference == mVolBtnMusicControls) {
+            Settings.System.putInt(getContentResolver(), Settings.System.VOLBTN_MUSIC_CONTROLS,
+                    mVolBtnMusicControls.isChecked() ? 1 : 0);
         } else {
             // If we didn't handle it, let preferences handle it.
             return super.onPreferenceTreeClick(preferenceScreen, preference);

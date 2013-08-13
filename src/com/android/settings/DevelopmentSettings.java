@@ -143,6 +143,8 @@ public class DevelopmentSettings extends PreferenceFragment
 
     private static final int RESULT_DEBUG_APP = 1000;
 
+    private static final String KILL_APP_LONGPRESS_BACK = "kill_app_longpress_back";
+
     private IWindowManager mWindowManager;
     private IBackupManager mBackupManager;
     private DevicePolicyManager mDpm;
@@ -191,6 +193,7 @@ public class DevelopmentSettings extends PreferenceFragment
 
     private CheckBoxPreference mShowAllANRs;
     private CheckBoxPreference mExperimentalWebView;
+    private CheckBoxPreference mKillAppLongpressBack;
 
     private final ArrayList<Preference> mAllPrefs = new ArrayList<Preference>();
     private final ArrayList<CheckBoxPreference> mResetCbPrefs
@@ -307,6 +310,8 @@ public class DevelopmentSettings extends PreferenceFragment
             mAllPrefs.add(hdcpChecking);
         }
         removeHdcpOptionsForProduction();
+
+        mKillAppLongpressBack = findAndInitCheckboxPref(KILL_APP_LONGPRESS_BACK);
     }
 
     private ListPreference addListPreference(String prefKey) {
@@ -430,6 +435,8 @@ public class DevelopmentSettings extends PreferenceFragment
             mEnabledSwitch.setChecked(mLastEnabledState);
             setPrefsEnabledState(mLastEnabledState);
         }
+
+        updateKillAppLongpressBackOptions();
     }
 
     void updateCheckBox(CheckBoxPreference checkBox, boolean value) {
@@ -515,6 +522,17 @@ public class DevelopmentSettings extends PreferenceFragment
             hdcpChecking.setSummary(summaries[index]);
             hdcpChecking.setOnPreferenceChangeListener(this);
         }
+    }
+
+    private void writeKillAppLongpressBackOptions() {
+        Settings.Secure.putInt(getActivity().getContentResolver(),
+                Settings.Secure.KILL_APP_LONGPRESS_BACK,
+                mKillAppLongpressBack.isChecked() ? 1 : 0);
+    }
+
+    private void updateKillAppLongpressBackOptions() {
+        mKillAppLongpressBack.setChecked(Settings.Secure.getInt(
+            getActivity().getContentResolver(), Settings.Secure.KILL_APP_LONGPRESS_BACK, 0) != 0);
     }
 
     private void updatePasswordSummary() {
@@ -701,7 +719,7 @@ public class DevelopmentSettings extends PreferenceFragment
             if (flinger != null) {
                 Parcel data = Parcel.obtain();
                 data.writeInterfaceToken("android.ui.ISurfaceComposer");
-                final int showUpdates = mShowScreenUpdates.isChecked() ? 1 : 0; 
+                final int showUpdates = mShowScreenUpdates.isChecked() ? 1 : 0;
                 data.writeInt(showUpdates);
                 flinger.transact(1002, data, null, 0);
                 data.recycle();
@@ -718,7 +736,7 @@ public class DevelopmentSettings extends PreferenceFragment
             if (flinger != null) {
                 Parcel data = Parcel.obtain();
                 data.writeInterfaceToken("android.ui.ISurfaceComposer");
-                final int disableOverlays = mDisableOverlays.isChecked() ? 1 : 0; 
+                final int disableOverlays = mDisableOverlays.isChecked() ? 1 : 0;
                 data.writeInt(disableOverlays);
                 flinger.transact(1008, data, null, 0);
                 data.recycle();
@@ -732,7 +750,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private void updateHardwareUiOptions() {
         updateCheckBox(mForceHardwareUi, SystemProperties.getBoolean(HARDWARE_UI_PROPERTY, false));
     }
-    
+
     private void writeHardwareUiOptions() {
         SystemProperties.set(HARDWARE_UI_PROPERTY, mForceHardwareUi.isChecked() ? "true" : "false");
         pokeSystemProperties();
@@ -846,7 +864,7 @@ public class DevelopmentSettings extends PreferenceFragment
         updateCheckBox(mShowCpuUsage, Settings.Global.getInt(getActivity().getContentResolver(),
                 Settings.Global.SHOW_PROCESSES, 0) != 0);
     }
-    
+
     private void writeCpuUsageOptions() {
         boolean value = mShowCpuUsage.isChecked();
         Settings.Global.putInt(getActivity().getContentResolver(),
@@ -1089,12 +1107,12 @@ public class DevelopmentSettings extends PreferenceFragment
                         .show();
         } else if (preference == mBugreportInPower) {
             Settings.Secure.putInt(getActivity().getContentResolver(),
-                    Settings.Secure.BUGREPORT_IN_POWER_MENU, 
+                    Settings.Secure.BUGREPORT_IN_POWER_MENU,
                     mBugreportInPower.isChecked() ? 1 : 0);
         } else if (preference == mKeepScreenOn) {
             Settings.Global.putInt(getActivity().getContentResolver(),
                     Settings.Global.STAY_ON_WHILE_PLUGGED_IN,
-                    mKeepScreenOn.isChecked() ? 
+                    mKeepScreenOn.isChecked() ?
                     (BatteryManager.BATTERY_PLUGGED_AC | BatteryManager.BATTERY_PLUGGED_USB) : 0);
         } else if (preference == mEnforceReadExternal) {
             if (mEnforceReadExternal.isChecked()) {
@@ -1142,6 +1160,8 @@ public class DevelopmentSettings extends PreferenceFragment
             writeShowHwOverdrawOptions();
         } else if (preference == mDebugLayout) {
             writeDebugLayoutOptions();
+        } else if (preference == mKillAppLongpressBack) {
+            writeKillAppLongpressBackOptions();
         }
 
         return false;

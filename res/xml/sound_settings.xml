@@ -52,9 +52,9 @@
             android:ringtoneType="ringtone" />
 
     <CheckBoxPreference
-         android:key="vibrate_when_ringing"
-         android:title="@string/vibrate_when_ringing_title"
-         android:persistent="false" />
+            android:key="vibrate_when_ringing"
+            android:title="@string/vibrate_when_ringing_title"
+            android:persistent="false" />
 
     <PreferenceCategory
             android:title="@string/sound_category_system_title"/>
@@ -96,23 +96,29 @@
 
     <!-- Dock -->
     <PreferenceCategory
-        android:key="dock_category"
-        android:title="@string/dock_settings"/>
+            android:key="dock_category"
+            android:title="@string/dock_settings"/>
 
     <!-- Do not nest these, or removals in code will break -->
     <PreferenceScreen
-        android:key="dock_audio"
-        android:title="@string/dock_audio_settings_title">
+            android:key="dock_audio"
+            android:title="@string/dock_audio_settings_title">
         <CheckBoxPreference
-            android:title="@string/bluetooth_dock_settings_a2dp"
-            android:key="dock_audio_media_enabled"
-            android:enabled="true"
+                android:title="@string/bluetooth_dock_settings_a2dp"
+                android:key="dock_audio_media_enabled"
+                android:enabled="true"
             />
     </PreferenceScreen>
 
     <CheckBoxPreference
-        android:key="dock_sounds"
-        android:title="@string/dock_sounds_enable_title"
-        android:defaultValue="false" />
+            android:key="dock_sounds"
+            android:title="@string/dock_sounds_enable_title"
+            android:defaultValue="false" />
+
+    <CheckBoxPreference
+            android:key="volbtn_music_controls"
+            android:title="@string/volbtn_music_controls_title"
+            android:summary="@string/volbtn_music_controls_summary"
+            android:defaultValue="false" />
 
 </PreferenceScreen>
