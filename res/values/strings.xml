@@ -4537,7 +4537,9 @@
 
     <!-- App Ops -->
     <string name="app_ops_title">App Ops</string>
-    <string name="app_ops_summary">Fine-grained permission controls (may cause issues)</string>
+    <string name="app_ops_summary">Fine-grained permission controls</string>
+    <string name="app_ops_warning_title">App Ops Warning</string>
+    <string name="app_ops_warning_message">App Ops allows you to selectively disable permissions for applications. In doing so, application are denied access to various functionalities implied by that permission (those permissions). While this allows you to control your privacy options for each application, it may cause various issues with certain applications, like force-closes, if the application explicitly depends on that permission (those permissions) for a certain function. Use at you own risk.</string>
 
     <!-- Navigation bar position -->
     <string name="nav_bar_position">Navigation Bar Position</string>

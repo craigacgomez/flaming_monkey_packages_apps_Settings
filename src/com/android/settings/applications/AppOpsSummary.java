@@ -16,9 +16,11 @@
 
 package com.android.settings.applications;
 
+import android.app.AlertDialog;
 import android.app.AppOpsManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceFrameLayout;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -33,10 +35,11 @@ import com.android.settings.R;
 public class AppOpsSummary extends Fragment {
     // layout inflater object used to inflate views
     private LayoutInflater mInflater;
-    
+
     private ViewGroup mContentContainer;
     private View mRootView;
     private ViewPager mViewPager;
+    private AlertDialog alertDialog;
 
     CharSequence[] mPageNames;
     static AppOpsState.OpsTemplate[] sPageTemplates = new AppOpsState.OpsTemplate[] {
@@ -88,6 +91,21 @@ public class AppOpsSummary extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        /* Display the warning dialog */
+        alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setCancelable(false);
+        alertDialog.setTitle(R.string.app_ops_warning_title);
+        alertDialog.setMessage(getResources().getString(R.string.app_ops_warning_message));
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
+                getResources().getString(com.android.internal.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+        alertDialog.show();
+
         // initialize the inflater
         mInflater = inflater;
 
