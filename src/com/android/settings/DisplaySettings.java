@@ -155,6 +155,13 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             getPreferenceScreen().removePreference(mWifiDisplayPreference);
             mWifiDisplayPreference = null;
         }
+		
+		// Volume rocker wake
+        mVolumeWake = (CheckBoxPreference) findPreference(KEY_VOLUME_WAKE);
+        if (mVolumeWake != null) {
+            mVolumeWake.setChecked(Settings.System.getInt(resolver,
+                    Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
+        }
 
         if (mIsPrimary) {
             int mNavigationBarPositionValue = Settings.Global.getInt(resolver,
@@ -173,13 +180,6 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             }
         } else {
             getPreferenceScreen().removePreference(findPreference(KEY_NAV_BAR_POSITION));
-        }
-
-        // Volume rocker wake
-        mVolumeWake = (CheckBoxPreference) findPreference(KEY_VOLUME_WAKE);
-        if (mVolumeWake != null) {
-            mVolumeWake.setChecked(Settings.System.getInt(resolver,
-                    Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
         }
     }
 
