@@ -65,6 +65,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private static final String KEY_WIFI_DISPLAY = "wifi_display";
     private static final String KEY_NAV_BAR_POSITION = "nav_bar_position";
     private static final String KEY_VOLUME_WAKE = "volume_wake";
+    private static final String KEY_LOCKSCREEN_ALL_WIDGETS = "lockscreen_all_widgets";
 
     private static final int DLG_GLOBAL_CHANGE_WARNING = 1;
 
@@ -85,6 +86,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private ListPreference mNavigationBarPositionPref;
 
     private CheckBoxPreference mVolumeWake;
+    private CheckBoxPreference mLockscreenAllWidgets;
 
     private boolean mIsPrimary;
 
@@ -155,12 +157,19 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             getPreferenceScreen().removePreference(mWifiDisplayPreference);
             mWifiDisplayPreference = null;
         }
-		
+
 		// Volume rocker wake
         mVolumeWake = (CheckBoxPreference) findPreference(KEY_VOLUME_WAKE);
         if (mVolumeWake != null) {
             mVolumeWake.setChecked(Settings.System.getInt(resolver,
                     Settings.System.VOLUME_WAKE_SCREEN, 0) == 1);
+        }
+
+        // Lockscreen all widgets
+        mLockscreenAllWidgets = (CheckBoxPreference) findPreference(KEY_LOCKSCREEN_ALL_WIDGETS);
+        if (mLockscreenAllWidgets != null) {
+            mLockscreenAllWidgets.setChecked(Settings.System.getInt(resolver,
+                    Settings.System.LOCKSCREEN_ALL_WIDGETS, 0) == 1);
         }
 
         if (mIsPrimary) {
@@ -377,6 +386,10 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         } else if (preference == mVolumeWake) {
             Settings.System.putInt(getContentResolver(), Settings.System.VOLUME_WAKE_SCREEN,
                     mVolumeWake.isChecked() ? 1 : 0);
+            return true;
+        } else if (preference == mLockscreenAllWidgets) {
+            Settings.System.putInt(getContentResolver(), Settings.System.LOCKSCREEN_ALL_WIDGETS,
+                    mLockscreenAllWidgets.isChecked() ? 1 : 0);
             return true;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);

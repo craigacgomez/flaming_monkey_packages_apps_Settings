@@ -87,4 +87,10 @@
                 android:summary="@string/volume_wake_summary"
                 android:defaultValue="false" />
 
+        <CheckBoxPreference
+                android:key="lockscreen_all_widgets"
+                android:title="@string/lockscreen_all_widgets"
+                android:summary="@string/lockscreen_all_widgets_summary"
+                android:defaultValue="false" />
+
 </PreferenceScreen>
