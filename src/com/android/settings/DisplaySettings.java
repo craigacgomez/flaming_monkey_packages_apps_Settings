@@ -48,6 +48,8 @@ import android.view.WindowManagerGlobal;
 import com.android.internal.view.RotationPolicy;
 import com.android.settings.DreamSettings;
 
+import java.io.OutputStreamWriter;
+import java.lang.Runtime;
 import java.util.ArrayList;
 
 public class DisplaySettings extends SettingsPreferenceFragment implements
@@ -414,10 +416,19 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             Settings.Global.putInt(getContentResolver(), Settings.Global.NAV_BAR_POSITION, value);
             updateNavigationBarPositionSummary(value);
             try {
-                Process proc = Runtime.getRuntime().exec(new String[]{"su","-c","killall com.android.systemui"});
-                proc.waitFor();
+                ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                Process p = pb.start();
+                OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream());
+                osw.write("killall com.android.systemui" + "\n");
+                osw.write("\nexit\n");
+                osw.flush();
+                osw.close();
+                int rc = p.waitFor();
+                if (rc != 0) {
+                    Log.e(TAG, "Non-zero response. Error restarting SystemUI.");
+                }
             } catch (Exception e) {
-                Log.e(TAG, "Error restarting SystemUI");
+                Log.e(TAG, "Error restarting SystemUI", e);
             }
             return true;
         }
