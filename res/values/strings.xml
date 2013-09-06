@@ -4606,4 +4606,6 @@
     <string name="lockscreen_all_widgets">Allow Adding Any Widget To The Lockscreen</string>
     <string name="lockscreen_all_widgets_summary">Allows added widgets to the lockscreen even if they are not lockscreen widgets. Some widgets may not function properly</string>
 
+    <!-- Quick Settings -->
+    <string name="quick_settings_title">Quick Settings</string>
 </resources>
