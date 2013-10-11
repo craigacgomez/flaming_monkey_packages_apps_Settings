@@ -4612,7 +4612,7 @@
     <!-- Categories -->
     <string name="display_notifications_title">Notifications customizations</string>
     <string name="display_customizations_title">UI customizations</string>
-    <string name="display_lockscreen">Lockscreen & timeout customizations</string>
+    <string name="display_lockscreen_title">Lockscreen and timeout customizations</string>
 
     <!-- Active Display -->
     <string name="ad_settings_title">Active display</string>
